@@ -2,4 +2,4 @@
 require './groupon_spider'
 require 'yaml'
 
-p GrouponSpider.new(YAML.load_file('options.yml')).data.map {|i| i[:name]}
+p GrouponSpider.new(YAML.load_file('options.yml')).data.map { |i| i[:name] }

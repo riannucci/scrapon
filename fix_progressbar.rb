@@ -8,5 +8,7 @@ class ProgressBar
     @format = "%-#{@title_width}s %3d%% %s %s"
     show
   end
-end if !ProgressBar.instance_methods.include? :title_width=
+
+  # Aryk: why are you checking if the method exists?, don't you want to overwrite it regardless?
+end if !ProgressBar.instance_methods(false).include?(:title_width=)
 

@@ -10,32 +10,24 @@
 
 class CountingSemaphore
 
-  def initialize(initvalue = 0)
-    @counter = initvalue
+  def initialize(counter = 0)
+    @counter = counter
     @waiting_list = []
     @lock = Mutex.new
   end
 
   def down
-    pushed = nil
-    @lock.synchronize {
-      if (@counter -= 1) < 0
-        pushed = @waiting_list.push(Thread.current)
-      end
-    }
-    Thread.stop if pushed
+    added = nil
+    @lock.synchronize { added = @waiting_list.push(Thread.current) if (@counter -= 1) < 0 }
+    Thread.stop if added
     self
   end
 
   def up
-    t = nil
-    @lock.synchronize {
-      if (@counter += 1) <= 0
-        t = @waiting_list.shift
-      end
-    }
+    removed = nil
+    @lock.synchronize { removed = @waiting_list.shift if (@counter += 1) <= 0 }
     # This can only throw "thread killed", and so there's no point in retry'ing
-    t.wakeup if t rescue nil 
+    removed.wakeup if removed rescue nil
     self
   end
 

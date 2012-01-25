@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby-local-exec
 
 class Integer
+
   def attempts(msg = nil)
     tries = 0
     begin
@@ -15,5 +16,6 @@ class Integer
       end
     end
   end
+
 end
 
