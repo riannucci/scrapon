@@ -82,9 +82,10 @@ class GrouponSpider
       :scrape_dates => 1,
       :scrape_csv => 2
     }
-    with_progress('Fetching groupon data', groupon_ids.size * (method_weight.values.inject(:+)+1)) do |progress|
+    total_weight = method_weight.values.inject(:+)
+    with_progress('Fetching groupon data', groupon_ids.size * (total_weight+1)) do |progress|
       groupon_ids.map_threads(concurrency) do |deal_id, protect| 
-        increments = method_weight.values.inject(:+)
+        increments = total_weight
         begin
           method_weight.each do |func, weight| 
             send(func, deal_id, protect) 
