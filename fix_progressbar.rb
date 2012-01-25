@@ -2,6 +2,7 @@
 require 'progressbar'
 
 class ProgressBar
+
   # Monkeypatch progressbar otherwise title is only 14 chars wide
   def title_width=(width)
     @title_width = width
@@ -9,6 +10,5 @@ class ProgressBar
     show
   end
 
-  # Aryk: why are you checking if the method exists?, don't you want to overwrite it regardless?
 end if !ProgressBar.instance_methods(false).include?(:title_width=)
 
