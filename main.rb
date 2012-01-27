@@ -5,4 +5,7 @@ require 'bundler/setup'
 require 'yaml'
 require './groupon_spider'
 
-p GrouponSpider.new(YAML.load_file('options.yml')).data.map { |i| i[:name] }
+GrouponSpider.new(YAML.load_file('options.yml')).tap do |spider|
+  spider.page_limit = 2
+  p spider.data.map { |i| i[:name] }
+end
