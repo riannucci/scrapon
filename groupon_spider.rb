@@ -4,7 +4,6 @@ require 'progressbar'
 require 'logger'
 require 'andand'
 require 'chronic'
-require './fix_progressbar'
 require './number_tools'
 require './thread_tools'
 
@@ -66,7 +65,7 @@ class GrouponSpider
   end
 
   def scrape_ids(limit)
-    with_progress('Fetching groupon ids', limit) do |progress|
+    with_progress('Fetching ids', limit) do |progress|
       (1..limit).to_a.map_threads(concurrency) do |i, protect|
         page = get_url(protect, "#{merchant_url}?page=#{i}")
         Thread.current[:ids] = page.root.xpath(GROUPON_ID_XPATH).map { |href| href.content.split("/").last }
@@ -83,7 +82,7 @@ class GrouponSpider
       :scrape_csv => 2
     }
     total_weight = method_weight.values.inject(:+)
-    with_progress('Fetching groupon data', groupon_ids.size * (total_weight+1)) do |progress|
+    with_progress('Fetching data', groupon_ids.size * (total_weight+1)) do |progress|
       groupon_ids.map_threads(concurrency) do |deal_id, protect| 
         increments = total_weight
         begin
@@ -130,7 +129,6 @@ class GrouponSpider
   def with_progress(msg, size)
     begin
       progress = @verbose ? ProgressBar.new(msg, size) : Dummy.new
-      progress.title_width = 23
       yield progress
     ensure
       progress.andand.finish
